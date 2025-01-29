@@ -1,11 +1,14 @@
 import os
-import copy
+import copy # 复制对象，深拷贝
 import random
 import numpy as np
-import torch.utils.data as data
+import torch.utils.data as data # 数据加载与处理
 from PIL import Image
 
+
 class SYSUData(data.Dataset):
+    # 初始化SYSU数据集，加载可见光与红外图像数据和标签
+    # 数据集目录、三种图像变换操作，最后两个参数用于指定数据索引
     def __init__(self, data_dir, transform1=None, transform2=None, transform3=None, colorIndex=None, thermalIndex=None):
         train_color_image = np.load(data_dir + 'train_rgb_resized_img.npy')
         self.train_color_label = np.load(data_dir + 'train_rgb_resized_label.npy')
@@ -22,21 +25,24 @@ class SYSUData(data.Dataset):
         self.cIndex = colorIndex
         self.tIndex = thermalIndex
 
+    # 根据索引获取数据集中的样本
     def __getitem__(self, index):
-
+        # 索引获取
         img1, target1 = self.train_color_image[self.cIndex[index]], self.train_color_label[self.cIndex[index]]
         img2, target2 = self.train_thermal_image[self.tIndex[index]], self.train_thermal_label[self.tIndex[index]]
-
+        # 图像变换
         img1_0 = self.transform1(img1)
         img1_1 = self.transform2(img1)
         img2 = self.transform3(img2)
-
+        # 返回图像与标签
         return img1_0, img1_1, img2, target1, target2
 
     def __len__(self):
         return len(self.train_color_label)
 
+
 class SYSUDataNormalSamples(data.Dataset):
+    # 初始化SYSU数据集的正常样本，加载可见光与红外图像数据与标签
     def __init__(self, data_dir, transform1=None, transform2=None, colorIndex=None, thermalIndex=None):
         train_color_image = np.load(data_dir + 'train_rgb_resized_img.npy')
         self.train_color_label = np.load(data_dir + 'train_rgb_resized_label.npy')
@@ -52,6 +58,7 @@ class SYSUDataNormalSamples(data.Dataset):
         self.cIndex = colorIndex
         self.tIndex = thermalIndex
 
+    # 根据索引获取数据集中的正常样本
     def __getitem__(self, index):
 
         img1, target1 = self.train_color_image[self.cIndex[index]], self.train_color_label[self.cIndex[index]]
@@ -62,10 +69,12 @@ class SYSUDataNormalSamples(data.Dataset):
 
         return img1, img2, target1, target2
 
+    # 返回数据集长度
     def __len__(self):
         return len(self.train_color_label)
 
 class SYSUDataRGBNormalSamples:
+    # 初始化SYSU可见光正常样本
     def __init__(self, data_dir):
         train_color_image = np.load(data_dir + 'train_rgb_resized_img.npy')
         self.train_color_label = np.load(data_dir + 'train_rgb_resized_label.npy')
@@ -84,6 +93,7 @@ class SYSUDataRGBNormalSamples:
         return samples
 
 class SYSUDataIRNormalSamples:
+    # 初始化红外正常样本
     def __init__(self, data_dir):
         train_thermal_image = np.load(data_dir + 'train_ir_resized_img.npy')
         self.train_thermal_label = np.load(data_dir + 'train_ir_resized_label.npy')
@@ -94,6 +104,7 @@ class SYSUDataIRNormalSamples:
         samples = self._load_samples()
         self.samples = samples
 
+    # 将红外图像与标签组合成样本列表
     def _load_samples(self):
         samples = []
         for i in range(self.train_thermal_label.shape[0]):
@@ -262,6 +273,7 @@ class RegDBDataIRSamples(data.Dataset):
         return samples
 
 class TestData(data.Dataset):
+    # 初始化测试数据集，加载测试图像数据与标签
     def __init__(self, test_img_file, test_label, transform=None, img_size=(224, 224)):
         test_image = []
         for i in range(len(test_img_file)):
@@ -282,6 +294,7 @@ class TestData(data.Dataset):
     def __len__(self):
         return len(self.test_image)
 
+# 辅助函数，从文件中加载图像文件路径和标签
 def load_data(input_data_path):
     with open(input_data_path) as f:
         data_file_list = open(input_data_path, 'rt').read().splitlines()
@@ -292,7 +305,9 @@ def load_data(input_data_path):
     return file_image, file_label
 
 def process_query_sysu(data_path, mode='all', relabel=False):
-
+    # 处理 SYSU数据集的查询数据
+    # relabel：是否重新标记数据，默认为 False。
+    # SYSU-MM01 数据集 cam3/6 是红外摄像头，query/probe集默认采用红外摄像头，gallery采用可见光摄像头
     if mode == 'all':
         ir_cameras = ['cam3', 'cam6']
     elif mode =='indoor':
@@ -328,9 +343,9 @@ def process_gallery_sysu(data_path, mode='all', trial=0, relabel=False, gall_mod
     random.seed(trial)
 
     if mode == 'all':
-        rgb_cameras = ['cam1', 'cam2', 'cam4', 'cam5']
+        rgb_cameras = ['cam1', 'cam2', 'cam4', 'cam5']  # 所有摄像头
     elif mode == 'indoor':
-        rgb_cameras = ['cam1', 'cam2']
+        rgb_cameras = ['cam1', 'cam2']  # 两个室内可见光摄像头
 
     file_path = os.path.join(data_path, 'exp/test_id.txt')
     files_rgb = []
