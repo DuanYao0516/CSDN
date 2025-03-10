@@ -194,8 +194,8 @@ if __name__ == '__main__':
     parser.add_argument('--gall_mode', default='single', type=str, help='single or multi')
     parser.add_argument('--regdb_test_mode', default='v-t', type=str, help='')
     parser.add_argument('--dataset', default='sysu', help='dataset name: regdb or sysu]')
-    parser.add_argument('--sysu_data_path', type=str, default='/ssd/s01015/data/SYSU-MM01/')
-    parser.add_argument('--regdb_data_path', type=str, default='/ssd/s01015/data/RegDB/')
+    parser.add_argument('--sysu_data_path', type=str, default='./datasets/SYSU-MM01/')
+    parser.add_argument('--regdb_data_path', type=str, default='./datasets/RegDB/')
     parser.add_argument('--trial', default=1, type=int, help='trial (only for RegDB dataset)')
     parser.add_argument('--batch-size', default=32, type=int, metavar='B', help='training batch size')
     parser.add_argument('--img_w', default=144, type=int, metavar='imgw', help='img width')
@@ -227,14 +227,14 @@ if __name__ == '__main__':
                         help='num of pos per identity in each modality')
     parser.add_argument('--num_workers', default=8, type=int,
                         help='num of pos per identity in each modality')
-    parser.add_argument('--output_path', type=str, default='models/base/',
+    parser.add_argument('--output_path', type=str, default='ckp/base/',
                         help='path to save related informations')
     parser.add_argument('--max_save_model_num', type=int, default=1, help='0 for max num is infinit')
     parser.add_argument('--resume_train_epoch', type=int, default=-1, help='-1 for no resuming')
     parser.add_argument('--auto_resume_training_from_lastest_step', type=ast.literal_eval, default=True)
     parser.add_argument('--total_train_epoch', type=int, default=120)
     parser.add_argument('--eval_epoch', type=int, default=1)
-    parser.add_argument('--resume_test_model', type=int, default=119, help='-1 for no resuming')
+    parser.add_argument('--resume_test_model', type=int, default=106, help='-1 for no resuming')
 
     config = parser.parse_args()
     seed_torch(config.seed)

@@ -1,0 +1,14 @@
+# 忽略 datasets 文件夹下的三个特定文件夹
+datasets
+
+# 忽略 ckp 文件夹下的所有文件和文件夹
+ckp/
+
+# 忽略所有的 __pycache__ 文件夹
+**/__pycache__/
+*.pyc
+core/__pycache__/
+data_loader/__pycache__/
+network/__pycache__/
+network/clip/__pycache__/
+tools/__pycache__/
