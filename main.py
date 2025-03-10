@@ -186,7 +186,7 @@ def main(config):
                                                                                        mINP, mAP, cmc))
 
 if __name__ == '__main__':
-
+    # 参数设置
     parser = argparse.ArgumentParser()
     parser.add_argument('--cuda', type=str, default='cuda')
     parser.add_argument('--mode', type=str, default='train', help='train, test')
