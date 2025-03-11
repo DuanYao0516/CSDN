@@ -7,7 +7,7 @@ import argparse
 import numpy as np
 
 
-from data_loader.loader import Loader
+from data_loader.loader import Loader  # 数据载入类 
 from core import Base, train, train_stage1, train_stage2, test
 from tools import make_dirs, Logger, os_walk, time_now
 import warnings
@@ -236,6 +236,6 @@ if __name__ == '__main__':
     parser.add_argument('--eval_epoch', type=int, default=1)
     parser.add_argument('--resume_test_model', type=int, default=106, help='-1 for no resuming')
 
-    config = parser.parse_args()
-    seed_torch(config.seed)
+    config = parser.parse_args()    # 参数列表配置
+    seed_torch(config.seed)     # 默认为1，在参数列表中设置
     main(config)
